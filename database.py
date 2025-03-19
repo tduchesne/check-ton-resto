@@ -79,10 +79,10 @@ class Database:
                 ))
 
             conn.commit()
-            logger.info("Données insérées dans la base avec succès.")
+            print("Données insérées dans la base avec succès.")
         except sqlite3.Error as e:
-            logger.error(f"Erreur SQLite lors de l'insertion : {e}")
+            print(f"Erreur SQLite lors de l'insertion : {e}")
             raise
         except KeyError as e:
-            logger.error(f"Colonne manquante dans le CSV : {e}")
+            print(f"Colonne manquante dans le CSV : {e}")
             raise

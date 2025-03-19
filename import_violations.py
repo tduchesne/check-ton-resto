@@ -2,11 +2,6 @@ from database import Database
 import logging
 import requests
 
-
-# Configuration des logs
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 # URL du fichier CSV
 CSV_URL = "https://data.montreal.ca/dataset/" \
           "05a9e718-6810-4e73-8bb9-5955efeb91a0/" \
@@ -19,22 +14,22 @@ def download_csv(url):
     try:
         response = requests.get(url)
         response.raise_for_status()
-        logger.info("Données téléchargées avec succès.")
+        print("Données téléchargées avec succès.")
         return response.text
     except requests.RequestException as e:
-        logger.error(f"Erreur lors du téléchargement : {e}")
+        print(f"Erreur lors du téléchargement : {e}")
         raise
 
 
 def main():
     db = Database()
     try:
-        logger.info("Début de l'importation...")
+        print("Début de l'importation...")
         csv_content = download_csv(CSV_URL)
         db.insert_data_to_db(csv_content)
-        logger.info("Importation terminée !")
+        print("Importation terminée !")
     except Exception as e:
-        logger.error(f"Échec de l'importation : {e}")
+        print(f"Échec de l'importation : {e}")
     finally:
         db.close_connection()
 
