@@ -14,6 +14,7 @@ def download_csv(url):
     try:
         response = requests.get(url)
         response.raise_for_status()
+        response.encoding = 'utf-8'
         print("Données téléchargées avec succès.")
         return response.text
     except requests.RequestException as e:

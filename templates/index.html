@@ -1,5 +1,35 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
 
 {% block content %}
-<h1> Hi, mom!</h1>
+<div class="container">
+    <h1>Rechercher des contraventions</h1>
+    <form method="post" id="searchForm" action="{{ url_for('index') }}">
+        <div class="mb-3">
+            {% if error %}
+                <p class="text-danger">{{ error }}</p>
+            {% endif %}
+            <label for="search_type" class="form-label">Rechercher par :</label>
+            <select class="form-select" id="search_type" name="search_type">
+                <option value="etablissement">Nom d'établissement</option>
+                <option value="proprietaire">Propriétaire</option>
+                <option value="rue">Rue</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="query" class="form-label">Recherche :</label>
+            <input type="text" class="form-control" id="query" name="query" required>
+            <div id="queryError" class="invalid-feedback" style="display: none;">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/confirm_query.js') }}"></script>
 {% endblock %}
