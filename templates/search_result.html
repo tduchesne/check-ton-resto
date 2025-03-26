@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Résultats de la recherche - Check-ton-resto
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Résultats de la recherche pour "{{ query }}" ({{ search_type}})</h1>
+
+    {% if results %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Établissement</th>
+                <th>Propriétaire</th>
+                <th>Adresse</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Statut</th>
+                </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+                <tr>
+                    <td>{{ result.id_poursuite }}</td>
+                    <td>{{ result.etablissement }}</td>
+                    <td>{{ result.proprietaire }}</td>
+                    <td>{{ result.adresse }}</td>
+                    <td>{{ result.date }}</td>
+                    <td>{{ result.description }}</td>
+                    <td>{{ result.statut }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Aucun résultat trouvé pour "{{ query }}" dans "{{ search_type }}".</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,11 +1,6 @@
 import sqlite3
 import csv
 from io import StringIO
-import logging
-
-# Configuration des logs
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 
 class Database:
@@ -38,7 +33,6 @@ class Database:
         """
         if self.connection is not None:
             self.connection.close()
-            self.connection = None
 
     def insert_data_to_db(self, csv_content):
         """
@@ -86,3 +80,26 @@ class Database:
         except KeyError as e:
             print(f"Colonne manquante dans le CSV : {e}")
             raise
+
+
+    def search_violation(self, search_type, query):
+        if len(query) < 3:
+            return []
+        """
+            Recherche les violations selon le type et la requête.
+        """
+        cursor = self.get_connection().cursor()
+        if search_type == "etablissement":
+            sql = "SELECT * FROM violations WHERE etablissement LIKE ?"
+        elif search_type == "proprietaire":
+            sql = "SELECT * FROM violations WHERE proprietaire LIKE ?"
+        elif search_type == "rue":
+            sql = "SELECT * FROM violations WHERE adresse LIKE ?"
+        else: 
+            return [] 
+        cursor.execute(sql, (f"%{query}%",))
+        results = cursor.fetchall()
+        # Récupére les noms des colonnes
+        columns = [desc[0] for desc in cursor.description]
+        # Convertit chaque tuple en dictionnaire
+        return [dict(zip(columns, row)) for row in results]
