@@ -1,0 +1,46 @@
+#%RAML 1.0
+title: Check-ton-resto API
+baseUri: http://127.0.0.1:5000
+version: 1.0
+
+/contrevenants:
+  get:
+    description: Récupère la liste des contraventions entre deux dates.
+    queryParameters:
+      du:
+        description: Date de début (ISO 8601, ex. 2022-05-08).
+        type: string
+        required: true
+        example: "2022-05-08"
+      au:
+        description: Date de fin (ISO 8601, ex. 2024-05-15).
+        type: string
+        required: true
+        example: "2024-05-15"
+    responses:
+      200:
+        description: Liste des contraventions.
+        body:
+          application/json:
+            type: object[]
+            example: |
+              [
+                {
+                  "id_poursuite": 9808,
+                  "business_id": 112486,
+                  "date": "20230727",
+                  "description": "Le produit altérable...",
+                  "adresse": "4737 Rue Hochelaga, Montréal, Québec",
+                  "date_statut": "20160311",
+                  "statut": "Ouvert",
+                  "etablissement": "MARCHE MALO",
+                  "proprietaire": "9328-6946 QUEBEC INC.",
+                  "ville": "Montréal",
+                  "categorie": "Épicerie avec préparation"
+                }
+              ]
+      400:
+        description: Paramètres invalides.
+        body:
+          application/json:
+            example: {"error": "Les dates doivent être au format ISO 8601 (YYYY-MM-DD)."}

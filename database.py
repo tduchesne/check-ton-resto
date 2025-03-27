@@ -88,6 +88,10 @@ class Database:
             return []
         """
             Recherche les violations selon le type et la requête.
+
+            :param search_type: Type de recherche (etablissement, proprietaire, rue)
+            :param query: Chaîne de recherche
+            :return: Liste de violations correspondant à la recherche
         """
         cursor = self.get_connection().cursor()
         if search_type == "etablissement":
@@ -103,4 +107,20 @@ class Database:
         # Récupére les noms des colonnes
         columns = [desc[0] for desc in cursor.description]
         # Convertit chaque tuple en dictionnaire
+        return [dict(zip(columns, row)) for row in results]
+
+
+    def get_violations_by_date(self, start_date, end_date):
+        """
+        Récupère les violations entre deux dates.
+
+        :param start_date: Date de début au format ISO 8601 (YYYY-MM-DD)
+        :param end_date: Date de fin au format ISO 8601 (YYYY-MM-DD)
+        :return: Liste de violations
+        """
+        cursor = self.get_connection().cursor()
+        query = "SELECT * FROM violations WHERE date BETWEEN ? AND ?"
+        cursor.execute(query, (start_date, end_date))
+        results = cursor.fetchall()
+        columns = [desc[0] for desc in cursor.description]
         return [dict(zip(columns, row)) for row in results]
