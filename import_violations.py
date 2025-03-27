@@ -1,5 +1,4 @@
 from database import Database
-import logging
 import requests
 
 # URL du fichier CSV
@@ -22,7 +21,7 @@ def download_csv(url):
         raise
 
 
-def main():
+def update_db():
     db = Database()
     try:
         print("Début de l'importation...")
@@ -36,4 +35,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    update_db()
