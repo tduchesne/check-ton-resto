@@ -44,6 +44,7 @@ class Database:
             conn = self.get_connection()
             cursor = conn.cursor()
 
+            cursor.execute("DELETE FROM violations")
             csv_file = StringIO(csv_content)
             reader = csv.DictReader(csv_file)
 
