@@ -28,8 +28,25 @@
         <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
 </div>
+
+<div class="container mt-4">
+    <h2> Recherche rapide par date</h2>
+    <form id="date-search-form">
+        <div class="mb-3">
+            <label for="start-date" class="form-label">Du :</label>
+            <input type="date" class="form-control" id="start-date" name="du" required>
+            <label for="end-date" class="form-label">Au :</label>
+            <input type="date" class="form-control" id="end-date" name="au" required>
+            <div id="dateError" class="invalid-feedback" style="display: none;">
+            </div> 
+        </div>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+    </form>
+    <div id="quick-search-results"
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/confirm_query.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endblock %}
