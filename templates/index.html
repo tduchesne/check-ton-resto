@@ -29,7 +29,7 @@
     </form>
 </div>
 
-<div class="container mt-4">
+<div class="container mt-4"> 
     <h2> Recherche rapide par date</h2>
     <form id="date-search-form">
         <div class="mb-3">
@@ -38,13 +38,13 @@
             <label for="end-date" class="form-label">Au :</label>
             <input type="date" class="form-control" id="end-date" name="au" required>
             <div id="dateError" class="invalid-feedback" style="display: none;">
-            </div> 
+            </div>
         </div>
         <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
-    <div id="quick-search-results"
-    </div>
-</div>
+    <div id="quick-search-results" class="mt-3"> 
+    </div>   
+</div> 
 {% endblock %}
 
 {% block scripts %}
