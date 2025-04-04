@@ -22,6 +22,8 @@ Exécutez le script Python suivant pour télécharger le fichier CSV des violati
 
 *(Note : Ce script efface les données existantes avant l'importation pour garantir un état frais).*    
 
+---
+
 ## A2 - Outil de recherche (Page d'accueil)
 Cette fonctionnalité permet de rechercher des contraventions via un formulaire.
 
@@ -36,6 +38,8 @@ make
 
 Accédez à l'application via un navigateur http://127.0.0.1:5000/  et utilisez le premier formulaire de recherche.
 
+---
+
  ## A3 - Synchronisation quotidienne
 
 Cette fonctionnalité met automatiquement à jour la base de données chaque jour à minuit.
@@ -43,6 +47,8 @@ Cette fonctionnalité met automatiquement à jour la base de données chaque jou
 - **Fonctionnement :** Le scheduler est initialisé au démarrage de l'application Flask (`app.py`). La tâche `update_db` (qui exécute la même logique que `import_violations.py`) est programmée pour s'exécuter quotidiennement. Des messages sont affichés dans la console Flask lors de l'ajout de la tâche et lors de son exécution.
 
 - **Note importante** : En mode debug (`FLASK_DEBUG=1`), le reloader de Flask recharge `app.py`, ce qui entraîne une double initialisation du scheduler et des exécutions simultanées. Mettre `FLASK_DEBUG=0` dans le makefile pour tester sans logs en doublon.
+
+---
 
 ## A4 - API RESTful pour les contrevenants par date
 
@@ -69,6 +75,8 @@ Cette fonctionnalité propose une API pour récupérer les contraventions dans u
   # Ou ouvrir http://127.0.0.1:5000/doc dans un navigateur.
   ```
 
+---
+
 ## A5 - Recherche rapide par date (AJAX)
 Cette fonctionnalité ajoute une recherche par date sur la page d'accueil qui utilise l'API A4 via AJAX pour afficher les résultats sans rechargement de page. 
 
@@ -80,3 +88,55 @@ Cette fonctionnalité ajoute une recherche par date sur la page d'accueil qui ut
     - **Attendu :** Le message "Aucune contravention trouvée..." s'affiche sans rechargement de page.
 4. **Test avec des dates invalides** (date manquante, début > fin) :
     - **Attendu :** Un message d'erreur de validation apparaît près des champs de date sans rechargement de page. Aucun appel API n'est effectué. La zone de résultats reste vide/effacée.
+
+---
+
+## A6 - Vue détaillée des infractions (AJAX)
+
+Cette fonctionnalité permet de visualiser les détails spécifiques des infractions pour un établissement sélectionné depuis le résumé de la recherche par date.
+
+1.  **Test du Fonctionnement :**
+    *   **Afficher le Résumé A5 :**
+        *   Effectuez d'abord une recherche par date via le formulaire A5 qui retourne au moins un établissement avec des contraventions.
+        *   Le tableau résumé A5 (Établissement, Nombre) s'affiche.
+    *   **Afficher les Détails :**
+        *   **Cliquez sur le nom** d'un établissement dans la colonne "Établissement" du tableau résumé.
+        *   **Attendu :**
+            *   Le tableau résumé est remplacé sans rechargement de page.
+            *   Un nouveau tableau apparaît, affichant les détails complets (ID, Date, Description, Adresse, etc.) de chaque infraction commise par cet établissement durant la période de dates initialement recherchée.
+          
+---
+
+## B1 - Notification par email des nouvelles contraventions
+
+Cette fonctionnalité détecte les contraventions ajoutées depuis la dernière mise à jour et envoie un email récapitulatif au destinataire configuré.
+
+1.  **Configuration Préalable :**
+    *   Éditez le fichier `config.yaml` à la racine du projet.
+    *   Mettre `email_recipient` à l'adresse email qui recevra les notifications.
+    *   Configurez la section `smtp_settings` avec les détails de votre serveur SMTP (ex: Gmail).
+        *   `host`: ex: `"smtp.gmail.com"`
+        *   `port`: ex: `587`
+        *   `use_tls`: `true` (pour le port 587)
+        *   `username`: Votre adresse email d'envoi complète.
+        *   `password`: **Important :** Pour Gmail avec l'authentification à deux facteurs, il faut générer et utiliser un **"Mot de passe d'application"**. Ne pas utiliser votre mot de passe Google ici.
+    
+2.  **Test du Fonctionnement :**
+    *   **Initialisation :** Exécutez le script de mise à jour une première fois :
+        ```bash
+        python import_violations.py
+        ```
+        *   Cela crée/met à jour la base de données et crée le fichier `db/last_known_ids.txt` contenant les IDs des contraventions actuelles. Aucun email n'est envoyé lors de cette première exécution car il n'y a pas d'état "précédent" à comparer.
+    *   **Simulation de changements :**
+        *   Ouvrez le fichier `db/last_known_ids.txt`.
+        *   Supprimez manuellement quelques lignes et sauvegardez le fichier. 
+    *   **Exécution  :**
+        *   Ré-exécutez le script de mise à jour :
+            ```bash
+            python import_violations.py
+            ```
+        *   **Vérification :**
+            *   **Console :** Vérifiez les logs à la console pour s'assurer du bon déroulement du processus.
+            *   **Email :** Vérifiez la boîte de réception de l'adresse `email_recipient` configurée. L'email peut prendre quelques instants pour arriver. **Vérifiez également le dossier "Courrier indésirable/Junk.** 
+            *   **Fichier `last_known_ids.txt` :** Vérifiez que ce fichier a été mis à jour.
+    
