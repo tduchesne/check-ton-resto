@@ -140,3 +140,42 @@ Cette fonctionnalité détecte les contraventions ajoutées depuis la dernière 
             *   **Email :** Vérifiez la boîte de réception de l'adresse `email_recipient` configurée. L'email peut prendre quelques instants pour arriver. **Vérifiez également le dossier "Courrier indésirable/Junk.** 
             *   **Fichier `last_known_ids.txt` :** Vérifiez que ce fichier a été mis à jour.
     
+---
+
+Okay, voici la section pour B2 à ajouter dans `correction.md`, en gardant le style des sections précédentes :
+
+---
+
+## B2 - Publication Twitter des nouveaux établissements
+
+Cette fonctionnalité publie automatiquement sur Twitter les noms des établissements ayant reçu de nouvelles contraventions détectées lors de la mise à jour via la fonctionnalité B1).
+
+1.  **Configuration Préalable :**
+    *   **Compte Développeur Twitter :** Un compte développeur Twitter est nécessaire ([developer.twitter.com](https://developer.twitter.com/)).
+    *   **Application Twitter :** Créez une "App" dans le portail développeur associée au compte Twitter sur lequel vous souhaitez publier.
+        *   Assurez-vous que l'App a les permissions **"Read and Write"** (Lecture et Écriture).
+        *   Notez les 4 clés/jetons générés : **API Key, API Key Secret, Access Token, Access Token Secret**.
+    *   **Fichier `config.yaml` :**
+        *   Éditez le fichier `config.yaml`.
+        *   Ajoutez/Complétez la section `twitter_api_credentials` avec les 4 clés/jetons obtenus :
+            ```yaml
+            twitter_api_credentials:
+              api_key: "VOTRE_API_KEY_ICI"
+              api_secret: "VOTRE_API_SECRET_ICI"
+              access_token: "VOTRE_ACCESS_TOKEN_ICI"
+              access_token_secret: "VOTRE_ACCESS_TOKEN_SECRET_ICI"
+            ```
+        *   **Sécurité** : Pour un projet réel, on utiliserait des variables d'environnement par exemple.
+
+2.  **Test du fonctionnement :**
+    *   Assurez-vous que la configuration (`config.yaml`) est correcte avec les 4 clés/jetons.
+    *   **Simulez de Nouvelles Contraventions :** Comme pour B1, exécutez `python import_violations.py` une fois, puis modifiez `db/last_known_ids.txt` en supprimant quelques lignes/IDs pour simuler des nouveautés.
+    *   **Exécutez la Mise à Jour :**
+        ```bash
+        python import_violations.py
+        ```
+    *   **Vérification :**
+        *   **Console :** Vérifiez les logs à la console pour s'assurer du bon déroulement du processus.
+        *   **Compte Twitter :** Vérifiez si un nouveau tweet a été publié. Le tweet devrait commencer par "Nouvelle(s) contravention(s) détectée(s) pour : " suivi de la liste des noms uniques des établissements correspondant aux IDs que vous aviez supprimés de `last_known_ids.txt`.
+      
+---
