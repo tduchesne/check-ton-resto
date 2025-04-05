@@ -92,3 +92,41 @@ version: 1.0
               {
                 "error": "Erreur interne du serveur"
               }
+
+/etablissements.xml:
+  get:
+    description: |
+      Récupère la liste de tous les établissements ayant au moins une infraction,
+      triée par ordre décroissant du nombre total d'infractions connues pour
+      chaque établissement (en format XML).
+    responses:
+      200:
+        description: Succès - Retourne une structure XML des établissements et leur compte d'infractions.
+        body:
+          application/xml; charset=utf-8: # Précise le Content-Type et l'encodage
+            example: |
+              <?xml version='1.0' encoding='utf-8'?>
+              <etablissements>
+                  <etablissement>
+                      <nom>RESTAURANT BASHA</nom>
+                      <nombre_infractions>40</nombre_infractions>
+                  </etablissement>
+                  <etablissement>
+                      <nom>DOUBLE PIZZA</nom>
+                      <nombre_infractions>34</nombre_infractions>
+                  </etablissement>
+                  <etablissement>
+                      <nom>BUFFALO BILL WINGS</nom>
+                      <nombre_infractions>30</nombre_infractions>
+                  </etablissement>
+                  <!-- ... autres éléments etablissement ... -->
+              </etablissements>
+      500:
+        description: Erreur interne du serveur lors de la récupération ou de la génération XML.
+        body:
+          application/xml; charset=utf-8:
+            example: |
+              <?xml version='1.0' encoding='utf-8'?>
+              <error>
+                  <message>Erreur interne du serveur</message>
+              </error>

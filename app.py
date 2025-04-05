@@ -3,6 +3,7 @@ from database import Database
 import import_violations
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
+import xml.etree.ElementTree as ET
 
 app = Flask(__name__, static_url_path='', static_folder='static')
 
@@ -150,3 +151,41 @@ def get_sorted_establishments():
     except Exception as e:
          print(f"Erreur lors de la récupération des établissements: {e}")
          return jsonify({"error": "Erreur interne du serveur"}), 500
+    
+
+@app.route('/etablissements.xml', methods=['GET'])
+def get_sorted_establishments_xml():
+    """
+    API endpoint pour obtenir une liste triée en ordre décroissant
+    des établissements par nombre d'infractions au format XML.
+    :return: Liste d'établissements au format XML
+    """
+    db = get_db()
+    try:
+        establishments = db.get_establishments_by_infraction_count()
+        assert establishments, "Aucun établissement trouvé."
+        # Création de l'arbre XML
+        # Création de l'élément racine
+        root = ET.Element("etablissements")
+        for establishment in establishments:
+            # Création d'un élément pour chaque établissement
+            etablissement_elem = ET.SubElement(root, "etablissement")
+            name_elem = ET.SubElement(etablissement_elem, "nom")
+            name_elem.text = str(establishment["etablissement"])
+            count_elem = ET.SubElement(etablissement_elem, "nombre_infractions")
+            count_elem.text = str(establishment["nombre_infractions"])
+        # Conversion de l'arbre XML en UTF-8     
+        xml_str = ET.tostring(root, encoding='utf-8', method='xml', 
+                              xml_declaration=True).decode('utf-8')
+        return app.response_class(
+            response=xml_str,
+            status=200,
+            mimetype='application/xml'
+        )
+    except Exception as e:
+        print(f"Erreur lors de la récupération des établissements: {e}")
+        error_xml = '<error><message>Erreur interne du serveur</message></error>'
+        response = make_response(error_xml)
+        response.headers['Content-Type'] = 'application/xml; charset=utf-8'
+        return response, 500
+
