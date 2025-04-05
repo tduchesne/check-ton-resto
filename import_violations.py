@@ -7,7 +7,7 @@ import os
 from io import StringIO
 import csv
 import sqlite3
-
+import tweepy
 
 # URL du fichier CSV
 CSV_URL = "https://data.montreal.ca/dataset/" \
@@ -77,9 +77,16 @@ def update_db():
             ]
             # Envoyer l'email 
             if config:
+                 print("Tentative d'envoi de l'email...")
                  send_notification_email(new_violations_details, config)
             else:
                  print("Notification non envoyée car la configuration n'a pas pu être chargée.")
+            # Publier sur Twitter
+            if config:
+                print("Tentative de publication sur Twitter...")
+                post_new_violations_to_twitter(new_violations_details, config)
+            else:
+                print("Tweet non envoyé car la configuration n'a pas pu être chargée.")
 
         # Insérer les données actuelles dans la BDD 
         print("Insertion des données actuelles dans la base de données...")
@@ -212,6 +219,60 @@ def send_notification_email(new_violations_details, config):
         if server:
             server.quit()
             print("Connexion SMTP fermée.")
+
+def post_new_violations_to_twitter(new_violations_details, config):
+    """Publie le nom des établissements ayant de nouvelles
+    contraventions sur Twitter."""         
+    if not config or "twitter_api_credentials" not in config:
+        print("Configuration Twitter non chargée, impossible de tweeter.")
+        return
+    credentials = config.get("twitter_api_credentials") 
+    required_keys = ["api_key", "api_secret", "access_token", "access_token_secret"]
+    if not credentials or not all(key in credentials for key in required_keys):
+        print("Configuration Twitter incomplète dans config.yaml.")
+        return
+    if not new_violations_details:
+        print("Aucune nouvelle contravention à tweeter.")
+        return
+    # Extraire les noms des établissements
+    establishment_names = set()
+    for violation in new_violations_details:
+        name = violation.get("etablissement")
+        if name:
+            establishment_names.add(name.strip())
+    if not establishment_names:
+        print("Aucun nom d'établissement trouvé dans les nouvelles violations.")
+        return
+    # Construire le message Twitter
+    prefix_message = f"Nouvelle(s) contravention(s) détectées(s) pour : "
+    names_string = ""
+    char_limit = 250 # Limite de caractères pour Twitter moins une marge
+    names_list = sorted(list(establishment_names))
+    first_name = True
+    for name in names_list:
+        separator = "" if first_name else ", "
+        if len(names_string) + len(separator) + len(name) <= char_limit:
+            names_string += separator + name
+            first_name = False
+        else:
+            names_string += separator + "..."
+            break
+    tweet_text = prefix_message + names_string     
+    # Authentification et publication via Tweepy
+    try:
+        client = tweepy.Client(
+            consumer_key=credentials["api_key"],
+            consumer_secret=credentials["api_secret"],
+            access_token=credentials["access_token"],
+            access_token_secret=credentials["access_token_secret"]
+        )
+        response = client.create_tweet(text=tweet_text)
+        print(f"Tweet publié avec succès : {response.data['text']}")
+        print(f"Lien du Tweet : https://twitter.com/MrTest4269/status/{response.data['id']}")
+    except tweepy.TweepyException as e:
+        print(f"Erreur lors de la publication du Tweet : {e}")
+    except Exception as e:
+        print(f"Erreur inattendue lors de la publication du Tweet : {e}")
 
 
 if __name__ == "__main__":

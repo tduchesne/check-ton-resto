@@ -8,3 +8,10 @@ smtp_settings:
   use_tls: true
   username: "emailpourtesterdestrucs1234@gmail.com"
   password: "rhjevjzdwhgrucsg"
+
+# Paramètres de l'API Twitter 
+twitter_api_credentials:
+  api_key: "P2CVYDYutMUQcL5DceKVeoLrh"
+  api_secret: "jT4TFRAYkYJCy50T9MWI7YE1R8AikhSwYTvJRO73z4gZMPjXnb" 
+  access_token: "1908335740767133699-hXFbxihnbPRvknuQvVUFFe5xDl7CbY"
+  access_token_secret: "PzLu2A342xDcdrXRNiO0yvXctlEmAJDGgtN3J7q4GeJHc"
