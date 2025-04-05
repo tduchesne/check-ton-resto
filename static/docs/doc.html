@@ -205,4 +205,24 @@ pre code {
 </code></pre></div><h2>HTTP status code <a href="http://httpstatus.es/500" target="_blank">500</a></h2><p>Erreur interne du serveur lors de la récupération ou du traitement des données.</p><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
   "error": "Erreur interne du serveur"
 }
-</code></pre></div></div></div></div></div></div></div></div></div></div></div></div><div class="col-md-3"><div id="sidebar" class="hidden-print affix" role="complementary"><ul class="nav nav-pills nav-stacked"><li><a href="#contrevenants">/contrevenants</a></li><li><a href="#etablissements">/etablissements</a></li></ul></div></div></div></div></body></html>
+</code></pre></div></div></div></div></div></div></div></div></div></div></div><div class="panel panel-default"><div class="panel-heading"><h3 id="etablissements_xml" class="panel-title">/etablissements.xml</h3></div><div class="panel-body"><div class="panel-group"><div class="panel panel-white resource-modal"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_etablissements_xml"><span class="parent"></span>/etablissements.xml</a> <span class="methods"><a href="#etablissements_xml_get"><span class="badge badge_get">get</span></a></span></h4></div><div id="panel_etablissements_xml" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#etablissements_xml_get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Récupère la liste de tous les établissements ayant au moins une infraction, triée par ordre décroissant du nombre total d&#39;infractions connues pour chaque établissement (en format XML).</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="etablissements_xml_get"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent"></span>/etablissements.xml</h4></div><div class="modal-body"><div class="alert alert-info"><p>Récupère la liste de tous les établissements ayant au moins une infraction, triée par ordre décroissant du nombre total d&#39;infractions connues pour chaque établissement (en format XML).</p></div><ul class="nav nav-tabs"><li class="active"><a href="#etablissements_xml_get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="etablissements_xml_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><p>Succès - Retourne une structure XML des établissements et leur compte d&#39;infractions.</p><h3>Body</h3><p><strong>Media type</strong>: application/xml; charset=utf-8</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>&lt;?xml version=&#39;1.0&#39; encoding=&#39;utf-8&#39;?&gt;
+&lt;etablissements&gt;
+    &lt;etablissement&gt;
+        &lt;nom&gt;RESTAURANT BASHA&lt;/nom&gt;
+        &lt;nombre_infractions&gt;40&lt;/nombre_infractions&gt;
+    &lt;/etablissement&gt;
+    &lt;etablissement&gt;
+        &lt;nom&gt;DOUBLE PIZZA&lt;/nom&gt;
+        &lt;nombre_infractions&gt;34&lt;/nombre_infractions&gt;
+    &lt;/etablissement&gt;
+    &lt;etablissement&gt;
+        &lt;nom&gt;BUFFALO BILL WINGS&lt;/nom&gt;
+        &lt;nombre_infractions&gt;30&lt;/nombre_infractions&gt;
+    &lt;/etablissement&gt;
+    &lt;!-- ... autres éléments etablissement ... --&gt;
+&lt;/etablissements&gt;
+</code></pre></div><h2>HTTP status code <a href="http://httpstatus.es/500" target="_blank">500</a></h2><p>Erreur interne du serveur lors de la récupération ou de la génération XML.</p><h3>Body</h3><p><strong>Media type</strong>: application/xml; charset=utf-8</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>&lt;?xml version=&#39;1.0&#39; encoding=&#39;utf-8&#39;?&gt;
+&lt;error&gt;
+    &lt;message&gt;Erreur interne du serveur&lt;/message&gt;
+&lt;/error&gt;
+</code></pre></div></div></div></div></div></div></div></div></div></div></div></div><div class="col-md-3"><div id="sidebar" class="hidden-print affix" role="complementary"><ul class="nav nav-pills nav-stacked"><li><a href="#contrevenants">/contrevenants</a></li><li><a href="#etablissements">/etablissements</a></li><li><a href="#etablissements_xml">/etablissements.xml</a></li></ul></div></div></div></div></body></html>
