@@ -109,7 +109,7 @@ class Database:
         results = cursor.fetchall()
         # Récupére les noms des colonnes
         columns = [desc[0] for desc in cursor.description]
-        # Convertit chaque tuple en dictionnaire
+        # Convertit chaque tuple en dictionnaire pour jsonify
         return [dict(zip(columns, row)) for row in results]
 
 
@@ -157,4 +157,24 @@ class Database:
         results = cursor.fetchall()
         columns = [desc[0] for desc in cursor.description]
         return [dict(zip(columns, row)) for row in results]
+    
+
+    def get_establishments_by_infraction_count(self):
+        """Récupère les établissements triés par nombre décroissant d'infractions.
+        :return: Liste de dictionnaires, chacun contenant le nom de l'établissement
+         et le nombre d'infractions.
+        """
+        cursor = self.get_connection().cursor()
+        query = """
+            SELECT etablissement, COUNT(*) as nombre_infractions
+            FROM violations
+            WHERE etablissement IS NOT NULL AND etablissement != ''
+            GROUP BY etablissement
+            ORDER BY nombre_infractions DESC;
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+        columns = ['etablissement', 'nombre_infractions']
+        return [dict(zip(columns, row)) for row in results]
+    
   

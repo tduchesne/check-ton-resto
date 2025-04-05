@@ -187,4 +187,22 @@ pre code {
 ]
 </code></pre></div><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><p>Paramètres invalides.</p><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
   "error": "Les dates doivent être au format ISO 8601 (YYYY-MM-DD)."
-}</code></pre></div></div></div></div></div></div></div></div></div></div></div></div><div class="col-md-3"><div id="sidebar" class="hidden-print affix" role="complementary"><ul class="nav nav-pills nav-stacked"><li><a href="#contrevenants">/contrevenants</a></li></ul></div></div></div></div></body></html>
+}</code></pre></div></div></div></div></div></div></div></div></div></div></div><div class="panel panel-default"><div class="panel-heading"><h3 id="etablissements" class="panel-title">/etablissements</h3></div><div class="panel-body"><div class="panel-group"><div class="panel panel-white resource-modal"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_etablissements"><span class="parent"></span>/etablissements</a> <span class="methods"><a href="#etablissements_get"><span class="badge badge_get">get</span></a></span></h4></div><div id="panel_etablissements" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#etablissements_get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Récupère la liste de tous les établissements ayant au moins une infraction, triée par ordre décroissant du nombre total d&#39;infractions connues pour chaque établissement.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="etablissements_get"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent"></span>/etablissements</h4></div><div class="modal-body"><div class="alert alert-info"><p>Récupère la liste de tous les établissements ayant au moins une infraction, triée par ordre décroissant du nombre total d&#39;infractions connues pour chaque établissement.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#etablissements_get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="etablissements_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><p>Succès - Retourne un tableau JSON des établissements et leur compte d&#39;infractions.</p><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: array of object</p><p><strong>Items</strong>: items</p><div class="items"><ul><li><strong>etablissement</strong>: <em><span class="required">required</span>(string)</em><p>Le nom de l&#39;établissement.</p></li><li><strong>nombre_infractions</strong>: <em><span class="required">required</span>(integer)</em><p>Le nombre total d&#39;infractions enregistrées pour cet établissement.</p></li></ul></div><p><strong>Example</strong>:</p><div class="examples"><pre><code>[
+  {
+    "etablissement": "RESTAURANT BASHA",
+    "nombre_infractions": 40
+  },
+  {
+    "etablissement": "DOUBLE PIZZA",
+    "nombre_infractions": 34
+  },
+  {
+    "etablissement": "BUFFALO BILL WINGS",
+    "nombre_infractions": 30
+  },
+  { ... }
+]
+</code></pre></div><h2>HTTP status code <a href="http://httpstatus.es/500" target="_blank">500</a></h2><p>Erreur interne du serveur lors de la récupération ou du traitement des données.</p><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
+  "error": "Erreur interne du serveur"
+}
+</code></pre></div></div></div></div></div></div></div></div></div></div></div></div><div class="col-md-3"><div id="sidebar" class="hidden-print affix" role="complementary"><ul class="nav nav-pills nav-stacked"><li><a href="#contrevenants">/contrevenants</a></li><li><a href="#etablissements">/etablissements</a></li></ul></div></div></div></div></body></html>
