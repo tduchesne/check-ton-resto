@@ -133,3 +133,20 @@ def validate_date_period(start_date_str, end_date_str):
     if start_dt > end_dt:
         return False, "La date de début doit être antérieure ou égale à la date de fin."
     return True, None
+
+
+@app.route('/etablissements', methods=['GET'])
+def get_sorted_establishments():
+    """
+    API endpoint pour obtenir une liste triée en ordre décroissant
+    des établissements par nombre d'infractions.
+    :return:Liste d'établissements au format JSON
+    """
+    db = get_db()
+    try:
+        establishments = db.get_establishments_by_infraction_count()
+        assert establishments, "Aucun établissement trouvé."
+        return jsonify(establishments)
+    except Exception as e:
+         print(f"Erreur lors de la récupération des établissements: {e}")
+         return jsonify({"error": "Erreur interne du serveur"}), 500
