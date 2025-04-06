@@ -1,50 +1,85 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{{ title }}
+{{ title }} - Recherche de Contraventions
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Rechercher des contraventions</h1>
-    <form method="post" id="searchForm" action="{{ url_for('index') }}">
-        <div class="mb-3">
-            {% if error %}
-                <p class="text-danger">{{ error }}</p>
-            {% endif %}
-            <label for="search_type" class="form-label">Rechercher par :</label>
-            <select class="form-select" id="search_type" name="search_type">
-                <option value="etablissement">Nom d'établissement</option>
-                <option value="proprietaire">Propriétaire</option>
-                <option value="rue">Rue</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label for="query" class="form-label">Recherche :</label>
-            <input type="text" class="form-control" id="query" name="query" required>
-            <div id="queryError" class="invalid-feedback" style="display: none;">
-            </div>
-        </div>
-        <button type="submit" class="btn btn-primary">Rechercher</button>
-    </form>
-</div>
+<div class="container mt-4">
+    <h1>Rechercher des Contraventions</h1>
+    <p class="lead mb-4">Explorez les données d'infractions alimentaires à Montréal.</p>
 
-<div class="container mt-4"> 
-    <h2> Recherche rapide par date</h2>
-    <form id="date-search-form">
-        <div class="mb-3">
-            <label for="start-date" class="form-label">Du :</label>
-            <input type="date" class="form-control" id="start-date" name="du" required>
-            <label for="end-date" class="form-label">Au :</label>
-            <input type="date" class="form-control" id="end-date" name="au" required>
-            <div id="dateError" class="invalid-feedback" style="display: none;">
+    
+    <ul class="nav nav-tabs mb-3" id="searchTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <!-- Onglet Recherche par Date -->
+            <button class="nav-link active" id="date-search-tab" data-bs-toggle="tab" data-bs-target="#date-search-pane" type="button" role="tab" aria-controls="date-search-pane" aria-selected="true">Recherche par date</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <!-- Onglet Recherche Générale -->
+            <button class="nav-link" id="general-search-tab" data-bs-toggle="tab" data-bs-target="#general-search-pane" type="button" role="tab" aria-controls="general-search-pane" aria-selected="false">Recherche générale</button>
+        </li>
+    </ul>
+
+    <!-- Contenu des onglets -->
+    <div class="tab-content" id="searchTabContent">
+
+        <!-- == Panneau Onglet Recherche par Date == -->
+        <div class="tab-pane fade show active" id="date-search-pane" role="tabpanel" aria-labelledby="date-search-tab" tabindex="0">
+            <h2 class="h4">Trouver les établissements par période</h2>
+            <form id="date-search-form" class="mb-3">
+                 <div class="row g-3 align-items-end">
+                    <div class="col-md">
+                        <label for="start-date" class="form-label">Du :</label>
+                        <input type="date" class="form-control" id="start-date" name="du" required>
+                    </div>
+                    <div class="col-md">
+                        <label for="end-date" class="form-label">Au :</label>
+                        <input type="date" class="form-control" id="end-date" name="au" required>
+                    </div>
+                    <div class="col-md-auto">
+                         <button type="submit" class="btn btn-primary w-100">Rechercher</button>
+                    </div>
+                </div>
+                 <div id="dateError" class="invalid-feedback mt-2" style="display: none;"></div>
+            </form>
+            <!-- Zone pour les résultats AJAX-->
+            <div id="quick-search-results" class="mt-4">
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Rechercher</button>
-    </form>
-    <div id="quick-search-results" class="mt-3"> 
-    </div>   
-</div> 
+
+        <!-- == Panneau Onglet Recherche Générale (A2) == -->
+        <div class="tab-pane fade" id="general-search-pane" role="tabpanel" aria-labelledby="general-search-tab" tabindex="0">
+            <h2 class="h4">Recherche générale</h2>
+            <form method="post" id="searchForm" action="{{ url_for('index') }}">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="search_type" class="form-label">Champ de recherche :</label>
+                        <select class="form-select" id="search_type" name="search_type">
+                            <option value="etablissement">Nom d'établissement</option>
+                            <option value="proprietaire">Propriétaire</option>
+                            <option value="rue">Rue</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="query" class="form-label">Terme (3+ caractères) :</label>
+                        <input type="text" class="form-control" id="query" name="query" required minlength="3">
+                        <div id="queryError" class="invalid-feedback" style="display: none;"></div>
+                    </div>
+                    <div class="col-md-2 align-self-end">
+                        <button type="submit" class="btn btn-secondary w-100">Rechercher</button>
+                    </div>
+                </div>
+                 {% if error %} 
+                    <p class="text-danger mt-2">{{ error }}</p>
+                 {% endif %}
+            </form>
+            
+        </div>
+
+    </div>
+
+</div>
 {% endblock %}
 
 {% block scripts %}

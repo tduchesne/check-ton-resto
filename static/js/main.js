@@ -203,8 +203,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Construit le tableau HTML du résumé
         let tableHTML = `
-            <h3>Résumé (${establishmentNames.length} établissements trouvés entre ${lastSearchStartDate} et ${lastSearchEndDate})</h3>
-            <table class="table table-hover table-sm">
+            <h3>${establishmentNames.length} établissements trouvés</h3>
+            <div class="table-container border rounded">
+            <table class="table table-striped table-hover table-sm mb-0">
                 <thead>
                     <tr>
                         <th>Établissement (Cliquez pour détails)</th>
@@ -227,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </tr>
             `;
         }
-        tableHTML += `</tbody></table>`;
+        tableHTML += `</tbody></table></div>`;
         resultsDisplayArea.innerHTML = tableHTML;
     }
 
@@ -293,6 +294,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
+     * Formate une chaîne de date 'YYYYMMDD' en 'YYYY-MM-DD'.
+     * Retourne la chaîne originale ou 'N/A' si invalide.
+     * @param {string} dateStr - La chaîne de date au format 'YYYYMMDD'.
+     * @returns {string} La date formatée ou la chaîne originale ou N/A.
+     */
+    function formatDateString(dateStr) {
+        if (!dateStr || typeof dateStr !== 'string' || dateStr.length !== 8 || !/^\d{8}$/.test(dateStr)) {
+            return dateStr || 'N/A';
+        }
+        try {
+            const year = dateStr.substring(0, 4);
+            const month = dateStr.substring(4, 6);
+            const day = dateStr.substring(6, 8);
+            return `${year}-${month}-${day}`;
+        } catch (e) {
+            console.error("Erreur de formatage de date pour:", dateStr, e);
+            return dateStr; 
+        }
+    }
+
+    /**
      * Affiche le tableau détaillé des infractions pour un établissement donné dans une période.
      * Inclut un bouton "Retour" pour revenir au résumé.
      * @param {Array} infractions - Tableau d'objets d'infraction détaillés.
@@ -303,7 +325,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Le bouton "Retour"
         let backButtonHTML = `
             <button type="button" class="btn btn-secondary btn-sm mb-3 back-to-summary">
-                « Retour au résumé
+                Retour
             </button>
         `;
 
@@ -315,12 +337,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Construit le tableau détaillé HTML
         let tableHTML = `
-            <h4>Détails des infractions pour ${escapeHTML(infractions[0].etablissement)} (${startDate} au ${endDate})</h4>
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered table-sm">
+            <h4>Détails des infractions pour ${escapeHTML(infractions[0].etablissement)}</h4>
+            <div class="table-responsive border rounded">
+                <table class="table table-striped table-bordered table-sm mb-0">
                      <thead>
                          <tr>
-                             <th>ID Poursuite</th>
                              <th>Date Infraction</th>
                              <th>Description</th>
                              <th>Adresse</th>
@@ -339,16 +360,15 @@ document.addEventListener('DOMContentLoaded', function() {
             // Génère chaque ligne du tableau détaillé
              tableHTML += `
                  <tr>
-                     <td>${escapeHTML(infraction.id_poursuite)}</td>
-                     <td>${escapeHTML(infraction.date)}</td>
+                     <td>${formatDateString(infraction.date)}</td>
                      <td>${escapeHTML(infraction.description)}</td>
                      <td>${escapeHTML(infraction.adresse)}</td>
-                     <td>${escapeHTML(infraction.date_jugement)}</td>
-                     <td>${escapeHTML(infraction.montant)}</td>
+                     <td>${formatDateString(infraction.date_jugement)}</td>
+                     <td>${escapeHTML(infraction.montant)}$</td>
                      <td>${escapeHTML(infraction.proprietaire)}</td>
                      <td>${escapeHTML(infraction.ville)}</td>
                      <td>${escapeHTML(infraction.statut)}</td>
-                     <td>${escapeHTML(infraction.date_statut)}</td>
+                     <td>${formatDateString(infraction.date_statut)}</td>
                      <td>${escapeHTML(infraction.categorie)}</td>
                  </tr>
              `;
