@@ -4,8 +4,26 @@ import import_violations
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
 import xml.etree.ElementTree as ET
+import math
 
 app = Flask(__name__, static_url_path='', static_folder='static')
+
+
+@app.template_filter('format_date')
+def format_date_string(date_str):
+    """
+    Filtre pour formater une date string 'YYYYMMDD' en 'YYYY-MM-DD'.
+    :return: La chaîne originale si le format est invalide ou si l'entrée est None/vide.
+    """
+    if not date_str or not isinstance(date_str, str) or len(date_str) != 8:
+        return date_str 
+    try:
+        # Parse la date au format YYYYMMDD
+        dt_object = datetime.strptime(date_str, '%Y%m%d')
+        # Formate en YYYY-MM-DD
+        return dt_object.strftime('%Y-%m-%d')
+    except ValueError:
+        return date_str 
 
 
 def init_scheduler():
@@ -59,7 +77,6 @@ def index():
         else: 
             error_search_violation = "La recherche doit contenir au moins 3 caractères."
             return render_template("index.html", title= "Acceuil", error=error_search_violation)
-        # Si méthode = GET
     return render_template("index.html", title="Accueil")
 
 

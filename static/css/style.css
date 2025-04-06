@@ -1,0 +1,269 @@
+:root {
+    /* Couleurs personnalisées */
+    --bs-primary: Teal; 
+    --bs-primary-rgb: 0, 128, 128; /* Version RGB pour les couleurs avec alpha */
+    --bs-secondary: #6c757d;
+    --bs-btn-color: #ffffff; /* Texte blanc sur les boutons primaires */
+}
+
+/* --- Appliquer les couleurs primaires --- */
+/* Boutons primaires */
+.btn-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: var(--bs-btn-color); /* Assure que le texte est lisible */
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: color-mix(in srgb, var(--bs-primary) 85%, black); /* Assombrit légèrement au survol */
+    border-color: color-mix(in srgb, var(--bs-primary) 80%, black);
+    color: var(--bs-btn-color);
+}
+
+/* Activer l'onglet avec la couleur primaire */
+.nav-tabs .nav-link.active {
+  color: var(--bs-primary);
+  border-color: #dee2e6 #dee2e6 var(--bs-primary); 
+  border-bottom-width: 2px;
+}
+
+/* Couleur de l'onglet inactif */
+.nav-tabs .nav-link:not(.active) {
+    color: #6c757d; 
+    background-color: transparent; 
+    border-color: transparent transparent #dee2e6; 
+}
+
+/* Survol de l'onglet inactif */
+.nav-tabs .nav-link:not(.active):hover,
+.nav-tabs .nav-link:not(.active):focus {
+    color: #495057; 
+    border-color: transparent transparent #dee2e6;
+    background-color: #f8f9fa; 
+}
+
+/* Navbar */
+.navbar-brand {
+    display: flex;         
+    align-items: center;   
+    gap: 0.5rem;           
+}
+
+/* Logo de la navbar */
+.navbar-brand img {
+     display: block; 
+}
+
+
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap'); 
+
+body {
+    font-family: 'Lato', sans-serif;
+} 
+
+
+/* Conteneur principal */
+main.container {
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+}
+
+/* Ajustements pour le tableau des résultats AJAX */
+#quick-search-results .table {
+    margin-top: 1.5rem;
+}
+
+/* Fond légèrement grisé pour l'en-tête */
+#quick-search-results .table thead {
+    background-color: #f8f9fa; 
+}
+
+/* Noms d'établissements cliquables */
+.view-infraction-details.btn-link {
+    text-decoration: underline;
+    text-align: left; 
+    padding-left: 0;
+    font-weight: bold; 
+}
+
+.view-infraction-details.btn-link:hover {
+    color: var(--bs-primary);
+}
+
+/* Style pour le bouton retour */
+.back-to-summary {
+    margin-bottom: 1rem; /* Espace avant le tableau détaillé */
+}
+
+/* Style pour les panneaux d'onglets */
+.tab-pane {
+    padding: 1.5rem 0; 
+}
+
+.table {
+    border: 1px solid #dee2e6; 
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem; 
+}
+
+/* En-tête des tables (thead) */
+.table > thead {
+    background-color: rgba(var(--bs-primary-rgb), 0.08); 
+    color: #212529; 
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table > thead th {
+    font-weight: 600;
+    padding: 0.9rem 0.75rem; 
+    border-bottom-width: 0;
+}
+
+/* Cellules du corps (td) */
+.table > tbody td {
+    padding: 0.75rem; 
+    vertical-align: middle; 
+    border-top: 1px solid #efefef; 
+}
+
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+   background-color: #fafafa; 
+   color: inherit; 
+}
+
+/* Effet de survol */
+.table-hover > tbody > tr:hover > * {
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
+  color: inherit;
+}
+
+/* Tableau des résultats AJAX  */
+#quick-search-results .table {
+    margin-top: 0;
+}
+
+/* Boutons lien */
+#quick-search-results .view-infraction-details.btn-link {
+    color: var(--bs-primary); 
+    font-weight: 500;
+    text-decoration: none; 
+    padding: 0.25rem 0.5rem; 
+    border-radius: 0.25rem;
+    transition: background-color 0.15s ease-in-out; 
+}
+
+#quick-search-results .view-infraction-details.btn-link:hover {
+    color: rgba(var(--bs-primary-rgb), 0.5); 
+    text-decoration: none; 
+}
+
+/* Style pour les messages dans la zone de résultat */
+#quick-search-results p {
+    margin-top: 1rem;
+    padding: 1rem;
+    text-align: center;
+    background-color: #e9ecef; /* Fond gris clair */
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+}
+#quick-search-results p.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+
+/* Cibler la table via son conteneur et la classe .table */
+#quick-search-results .table-responsive {
+    border: 1px solid #dee2e6; 
+    border-radius: 0.375rem; 
+    margin-top: 0.5rem; 
+}
+
+#quick-search-results .table-responsive .table {
+    font-size: 0.85rem;
+    margin-bottom: 0; 
+}
+
+#quick-search-results .table-responsive .table th,
+#quick-search-results .table-responsive .table td {
+    padding: 0.5rem 0.4rem;
+    white-space: normal;
+}
+
+#quick-search-results .table-responsive .table thead th {
+    background-color: #e9ecef; 
+    font-weight: 600;
+    white-space: nowrap; 
+}
+
+
+#quick-search-results .table-responsive .table-bordered th,
+#quick-search-results .table-responsive .table-bordered td {
+    border-color: #e9ecef; 
+}
+
+/* --- Styles pour la Page de Résultats de Recherche (A2) --- */
+
+/* Titre de la page search-results */
+#search-results-page h1 {
+    color: #343a40;
+    font-weight: 700; 
+    margin-bottom: 0.5rem; 
+    padding-bottom: 0.75rem; 
+    border-bottom: 1px solid #dee2e6; 
+}
+
+/* Résumé de la recherche */
+#search-results-page h1 + p.search-summary { 
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-bottom: 2rem; 
+}
+
+#search-results-page h1 {
+    margin-bottom: 1.5rem; /* Un peu plus d'espace après le titre */
+}
+
+#search-results-page .table {
+    font-size: 0.9rem;
+}
+
+#search-results-page .table th,
+#search-results-page .table td {
+    /* Ajustement du padding pour table-sm */
+    padding: 0.6rem 0.5rem;
+    vertical-align: top; /* Aligne en haut pour les descriptions longues */
+    white-space: normal; /* Retour à la ligne */
+}
+
+#search-results-page .table thead th {
+    /* Utilise le même fond que les autres tables */
+    background-color: rgba(var(--bs-primary-rgb), 0.08);
+    font-weight: 600;
+    white-space: nowrap; /* Pas de retour à la ligne pour les titres */
+    border-bottom-width: 2px; /* Bordure plus marquée sous l'en-tête */
+    border-color: #dee2e6;
+}
+
+/* Rend les bordures de table-bordered plus discrètes */
+#search-results-page .table-bordered th,
+#search-results-page .table-bordered td {
+    border-color: #efefef;
+}
+
+/* Spécifique à la colonne description si elle est trop envahissante */
+#search-results-page .table td:nth-child(5) { 
+    
+    max-width: 300px; 
+    
+    font-size: 0.85rem;
+}
+
+/* Style pour le message "aucun résultat" */
+#search-results-page .alert {
+    text-align: center;
+}
