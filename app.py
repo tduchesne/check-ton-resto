@@ -54,7 +54,8 @@ def update_db():
     except Exception as e:
         print(f"Erreur lors de la synchronisation : {e}")
 
-# La version déployée s'occupe du scheduler. 
+# La version déployée ne peut pas utiliser le scheduler
+# (limitation de la version gratuite).
 # init_scheduler()
 
 
