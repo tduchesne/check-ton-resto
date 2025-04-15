@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from flask import Flask, g, json, jsonify, make_response
 from flask import render_template, request
 from database import Database
@@ -5,7 +7,8 @@ import data_sync
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
 import xml.etree.ElementTree as ET
-import math
+
+load_dotenv()
 
 app = Flask(__name__, static_url_path='', static_folder='static')
 

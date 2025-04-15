@@ -8,6 +8,12 @@ from io import StringIO
 import csv
 import sqlite3
 import tweepy
+from dotenv import load_dotenv
+
+# Charge les variables d'environnement si le fichier .env existe.
+# Pour la version déployée, elles seront définies sur
+# le server d'hébergement.
+load_dotenv()
 
 # URL du fichier CSV
 CSV_URL = "https://data.montreal.ca/dataset/" \
@@ -147,26 +153,87 @@ def save_known_ids(ids_set, filepath=KNOWN_IDS_FILEPATH):
               connus dans '{filepath}': {e}""")
 
 
-def load_config(filepath=CONFIG_FILE):
-    """Charge la configuration depuis un fichier YAML."""
+def load_config():
+    """
+    Charge la configuration :
+    - Paramètres non sensibles depuis config.yaml.
+    - Secrets (SMTP Auth, Twitter API) depuis les variables d'environnement.
+    """
+    config = {}
+    # Charge la config non sensible depuis config.yaml
     try:
-        with open(filepath, 'r') as f:
-            config = yaml.safe_load(f)
-            if not config or not all(key in config for key in
-                                     ['email_recipient', 'smtp_settings']):
-                raise ValueError("""Configuration YAML invalide ou manquante
-                                  (email_recipient/smtp_settings requis).""")
-            return config
+        with open(CONFIG_FILE, 'r') as f:
+            yaml_config = yaml.safe_load(f)
+            if yaml_config:
+                config.update(yaml_config)
+                if 'email_recipient' not in config:
+                    print(f"""ATTENTION: 'email_recipient'
+                          non trouvé dans '{CONFIG_FILE}'.""")
+                if ('smtp_settings' not in config or
+                    not all(k in config['smtp_settings']
+                            for k in ['host', 'port', 'use_tls'])):
+                    print(f"ATTENTION: Section 'smtp_settings' incomplète "
+                          f"(host, port, use_tls requis) dans '{CONFIG_FILE}'")
+            else:
+                print(f"ATTENTION: Fichier '{CONFIG_FILE}' est vide.")
+        print(f"Configuration non sensible chargée depuis '{CONFIG_FILE}'.")
     except FileNotFoundError:
-        print(f"ERREUR: Fichier de configuration '{filepath}' non trouvé.")
+        print(f"""ERREUR: Fichier de configuration '{CONFIG_FILE}' non trouvé.
+              Il est nécessaire pour les paramètres de base.""")
         return None
     except yaml.YAMLError as e:
-        print(f"""ERREUR: Impossible de parser le
-              fichier YAML '{filepath}': {e}""")
+        print(f"""ERREUR: Impossible de parser le fichier YAML
+              '{CONFIG_FILE}': {e}""")
         return None
-    except ValueError as e:
-        print(f"ERREUR: {e}")
+    except Exception as e:
+        print(f"Erreur inattendue lors de la lecture de '{CONFIG_FILE}': {e}")
         return None
+    # Lecture des secrets depuis les variables d'environnement
+    print("Chargement des secrets depuis les variables d'environnement...")
+    smtp_settings = config.get('smtp_settings', {})
+    smtp_settings['username'] = os.environ.get('SMTP_USERNAME')
+    smtp_settings['password'] = os.environ.get('SMTP_PASSWORD')
+    config['smtp_settings'] = smtp_settings
+    # Crée le dict pour les clés Twitter s'il n'existe pas
+    twitter_creds = config.get('twitter_api_credentials', {})
+    twitter_creds['api_key'] = os.environ.get('TWITTER_API_KEY')
+    twitter_creds['api_secret'] = os.environ.get('TWITTER_API_SECRET')
+    twitter_creds['access_token'] = os.environ.get('TWITTER_ACCESS_TOKEN')
+    twitter_creds['access_token_secret'] = os.environ.get(
+        'TWITTER_ACCESS_TOKEN_SECRET'
+    )
+    config['twitter_api_credentials'] = twitter_creds
+    # Conversion et vérifications
+    try:
+        config['smtp_settings']['port'] = int(
+            config['smtp_settings'].get('port', 587))
+    except (ValueError, TypeError):
+        print(f"""ATTENTION: Port SMTP('{config['smtp_settings'].get('port')}')
+              invalide dans config.yaml. Utilisation de 587.""")
+        config['smtp_settings']['port'] = 587
+    try:
+        config['smtp_settings']['use_tls'] = bool(
+            config['smtp_settings'].get('use_tls', True))
+    except Exception:
+        print(f"""ATTENTION: Valeur use_tls ('{config['smtp_settings'].get(
+            'use_tls')}') invalide dans config.yaml. Utilisation de True.""")
+        config['smtp_settings']['use_tls'] = True
+    # Vérifie la présence des secrets lus depuis l'environnement
+    if not smtp_settings.get('username') or not smtp_settings.get('password'):
+        print("""ATTENTION: Identifiants SMTP (SMTP_USERNAME, SMTP_PASSWORD)
+              manquants dans les variables d'environnement.
+              L'envoi d'email échouera.""")
+    required_keys = [
+        'api_key',
+        'api_secret',
+        'access_token',
+        'access_token_secret'
+    ]
+    if not all(twitter_creds.get(k) for k in required_keys):
+        print("""ATTENTION: Clés API Twitter manquantes dans les variables
+        d'environnement. La publication Twitter échouera.""")
+    print("Configuration chargée.")
+    return config
 
 
 def send_notification_email(new_violations_details, config):
@@ -185,9 +252,11 @@ def send_notification_email(new_violations_details, config):
         return
 
     subject = "Nouvelles contraventions détectées"
-    body_intro = f"""Bonjour,\n\n{len(new_violations_details)}
-     nouvelle(s) contravention(s) ont été détectée(s)
-     depuis la dernière mise à jour :\n\n"""
+    body_intro = (
+        "Bonjour,\n\n"
+        f"{len(new_violations_details)} nouvelle(s) contravention(s) "
+        "ont été détectée(s) depuis la dernière mise à jour :\n\n"
+    )
     body_details = ""
     for violation in new_violations_details:
         body_details += (
