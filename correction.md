@@ -187,3 +187,31 @@ Cette fonctionnalité publie sur Twitter les noms des établissements avec de no
         *   **Compte Twitter :** Vérifiez si un nouveau tweet a été publié. Le tweet devrait commencer par "Nouvelle(s) contravention(s) détectée(s) pour : " suivi de la liste des noms uniques des établissements correspondant aux IDs que vous aviez supprimés de `last_known_ids.txt`.
       
 ---
+
+---
+
+## F1 - Déploiement de l'Application
+
+L'application web complète a été déployée sur la plateforme cloud PythonAnywhere et est accessible publiquement.
+
+*   **URL de l'Application Déployée :**
+    *   **[http://checktonresto.pythonanywhere.com](http://checktonresto.pythonanywhere.com)**
+    
+*   *   **Limitations (Compte Gratuit PythonAnywhere) :**
+    *   **Pas de Synchronisation Automatique (A3, B1, B2) :** En raison des restrictions réseau des comptes gratuits PythonAnywhere (proxy bloquant l'accès à `data.montreal.ca`), le script `data_sync.py` **ne peut pas** télécharger les nouvelles données. Par conséquent :
+        *   La **Tâche Planifiée** configurée sur PythonAnywhere échouera lors de la tentative de téléchargement.
+        *   Les fonctionnalités de **détection de nouveautés (B1, B2)**, de **notification par email (B1)** et de **publication Twitter (B2)** ne seront **pas actives** sur cette version déployée. Ces fonctionnalités ont été testées et validées en développement local (voir sections B1/B2 pour les tests locaux).
+    *   **Base de Données Statique :** Une version **pré-remplie** de la base de données SQLite (`database.db`) et du fichier d'état (`last_known_ids.txt`) a été uploadée manuellement sur le serveur. Les données affichées par l'application **ne seront pas mises à jour** automatiquement.
+    *   **Scheduler Local Désactivé :** L'initialisation du scheduler `APScheduler` dans `app.py` a été désactivée, car la tâche de mise à jour ne peut pas fonctionner sur cet environnement.
+
+*   **Fonctionnalités Testables sur la Version Déployée :**
+    *   Interface de recherche générale (A2 - affichage des résultats de la DB statique).
+    *   Interface de recherche par date AJAX (A5/A6 - interaction avec la DB statique).
+    *   Endpoints API REST (A4, C1, C2 - lecture de la DB statique).
+    *   Documentation API (`/doc`).
+    *   Interface utilisateur générale (style, navigation).
+    
+*   **Configuration des Secrets :**
+    *   Les secrets (identifiants SMTP, clés API Twitter) sont configurés via les **variables d'environnement** sur PythonAnywhere, même si les fonctionnalités B1/B2 ne sont pas actives en production sur ce plan gratuit.
+
+---
