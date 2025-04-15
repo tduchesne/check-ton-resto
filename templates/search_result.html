@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Résultats de la recherche - Check-ton-resto
+{% endblock %}
+
+{% block content %}
+<div class="container" id="search-results-page">
+    <div class="search-title-block mb-4">
+        <h1 class="mb-1">Résultats de la recherche</h1>
+        <p class="lead search-summary">
+            Pour le terme : <span class="badge bg-primary fw-normal">{{ query }}</span><br>
+            Dans le champ : <span class="badge bg-primary fw-normal">{{ search_type }}</span>
+        </p>
+    </div>
+
+    {% if results %}
+    <div class="table-responsive border rounded mt-3"> 
+        <table class="table table-striped table-hover table-bordered table-sm mb-0">
+            <thead>
+                <tr>
+                    <th>Établissement</th>
+                    <th>Propriétaire</th>
+                    <th>Adresse</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in results %}
+                    <tr>
+                        {# <td>{{ result.id_poursuite }}</td> #}
+                        <td>{{ result.etablissement }}</td>
+                        <td>{{ result.proprietaire }}</td>
+                        <td>{{ result.adresse }}</td>
+                        <td>{{ result.date | format_date }}</td>
+                        <td>{{ result.description }}</td>
+                        <td>{{ result.statut }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div> {# Fin table-responsive #}
+
+    {% else %}
+    <div class="alert alert-warning mt-4" role="alert">
+        Aucun résultat trouvé pour "<strong>{{ query }}</strong>" dans le champ "<em>{{ search_type }}</em>".
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

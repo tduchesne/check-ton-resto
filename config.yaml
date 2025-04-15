@@ -1,0 +1,8 @@
+# Destinataire du mail
+email_recipient: "thierryduchesne3@gmail.com"
+
+# Paramètres SMTP
+smtp_settings:
+  host: "smtp.gmail.com"
+  port: 587
+  use_tls: true

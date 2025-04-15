@@ -1,0 +1,132 @@
+#%RAML 1.0
+title: Check-ton-resto API
+baseUri: http://127.0.0.1:5000
+version: 1.0
+
+/contrevenants:
+  get:
+    description: Récupère la liste des contraventions entre deux dates.
+    queryParameters:
+      du:
+        description: Date de début (ISO 8601, ex. 2022-05-08).
+        type: string
+        required: true
+        example: "2022-05-08"
+      au:
+        description: Date de fin (ISO 8601, ex. 2024-05-15).
+        type: string
+        required: true
+        example: "2024-05-15"
+    responses:
+      200:
+        description: Liste des contraventions.
+        body:
+          application/json:
+            type: object[]
+            example: |
+              [
+                {
+                  "id_poursuite": 9808,
+                  "business_id": 112486,
+                  "date": "20230727",
+                  "description": "Le produit altérable...",
+                  "adresse": "4737 Rue Hochelaga, Montréal, Québec",
+                  "date_statut": "20160311",
+                  "statut": "Ouvert",
+                  "etablissement": "MARCHE MALO",
+                  "proprietaire": "9328-6946 QUEBEC INC.",
+                  "ville": "Montréal",
+                  "categorie": "Épicerie avec préparation"
+                }
+              ]
+      400:
+        description: Paramètres invalides.
+        body:
+          application/json:
+            example: {"error": "Les dates doivent être au format ISO 8601 (YYYY-MM-DD)."}
+
+/etablissements:
+  get:
+    description: |
+      Récupère la liste de tous les établissements ayant au moins une infraction,
+      triée par ordre décroissant du nombre total d'infractions connues pour
+      chaque établissement.
+    responses:
+      200:
+        description: Succès - Retourne un tableau JSON des établissements et leur compte d'infractions.
+        body:
+          application/json:
+            type: array
+            items:
+              type: object
+              properties:
+                etablissement:
+                  type: string
+                  description: Le nom de l'établissement.
+                  required: true
+                nombre_infractions:
+                  type: integer
+                  description: Le nombre total d'infractions enregistrées pour cet établissement.
+                  required: true
+            example: |
+              [
+                {
+                  "etablissement": "RESTAURANT BASHA",
+                  "nombre_infractions": 40
+                },
+                {
+                  "etablissement": "DOUBLE PIZZA",
+                  "nombre_infractions": 34
+                },
+                {
+                  "etablissement": "BUFFALO BILL WINGS",
+                  "nombre_infractions": 30
+                },
+                { ... }
+              ]
+      500:
+        description: Erreur interne du serveur lors de la récupération ou du traitement des données.
+        body:
+          application/json:
+            example: |
+              {
+                "error": "Erreur interne du serveur"
+              }
+
+/etablissements.xml:
+  get:
+    description: |
+      Récupère la liste de tous les établissements ayant au moins une infraction,
+      triée par ordre décroissant du nombre total d'infractions connues pour
+      chaque établissement (en format XML).
+    responses:
+      200:
+        description: Succès - Retourne une structure XML des établissements et leur compte d'infractions.
+        body:
+          application/xml; charset=utf-8: # Précise le Content-Type et l'encodage
+            example: |
+              <?xml version='1.0' encoding='utf-8'?>
+              <etablissements>
+                  <etablissement>
+                      <nom>RESTAURANT BASHA</nom>
+                      <nombre_infractions>40</nombre_infractions>
+                  </etablissement>
+                  <etablissement>
+                      <nom>DOUBLE PIZZA</nom>
+                      <nombre_infractions>34</nombre_infractions>
+                  </etablissement>
+                  <etablissement>
+                      <nom>BUFFALO BILL WINGS</nom>
+                      <nombre_infractions>30</nombre_infractions>
+                  </etablissement>
+                  <!-- ... autres éléments etablissement ... -->
+              </etablissements>
+      500:
+        description: Erreur interne du serveur lors de la récupération ou de la génération XML.
+        body:
+          application/xml; charset=utf-8:
+            example: |
+              <?xml version='1.0' encoding='utf-8'?>
+              <error>
+                  <message>Erreur interne du serveur</message>
+              </error>

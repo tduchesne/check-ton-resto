@@ -1,0 +1,25 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom mb-4">
+    <div class="container-fluid">
+        <!-- Titre cliquable vers l'accueil -->
+        <a class="navbar-brand" href="{{ url_for('index') }}">
+           <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Logo" id=nav-logo width="30" height="30" class="d-inline-block align-text-top me-2"> 
+            Check Ton Resto
+        </a>
+        <!-- Bouton pour menu mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Liens de navigation simplifiés -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              
+                <li class="nav-item">
+
+                    <a class="nav-link" href="{{ url_for('documentation') }}" target="_blank">Documentation API</a>
+                </li>
+                
+                
+            </ul>
+        </div>
+    </div>
+</nav>
