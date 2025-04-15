@@ -2,6 +2,32 @@
 
 Ce document détaille comment tester les différentes fonctionnalités implémentées.
 
+## Configuration Générale (Email et Twitter)
+Ce projet utilise des variables d'environnement pour gérer les informations sensibles (identifiants SMTP, clés API Twitter) afin de ne pas les stocker directement dans le code source ou dans `config.yaml`.
+
+**Pour le développement local :**
+
+1. Créez un fichier `.env` à la racine du projet.
+2. Remplir le fichier .env avec les informations suivantes (voir section **B2** pour savoir comment avoir les secrets Twitter):
+```bash
+# .env - Fichier pour variables d'environnement locales
+
+# secrets SMTP
+SMTP_USERNAME="remplir ici"
+SMTP_PASSWORD="remplir ici" 
+
+# secrets Twitter
+TWITTER_API_KEY="remplir ici"
+TWITTER_API_SECRET="remplir ici"
+TWITTER_ACCESS_TOKEN="remplir ici"
+TWITTER_ACCESS_TOKEN_SECRET="remplir ici"
+```
+
+3. **Fichier config.yaml :** Ce fichier contient des configurations non sensibles (comme `email_recipient`, `smtp_settings.host`, etc.).
+
+**Pour le déploiement (PythonAnywhere) :**
+Les mêmes variables d'environnement (`EMAIL_RECIPIENT`, `SMTP_HOST`, `SMTP_PASSWORD`, `TWITTER_API_KEY`, etc.) seront configurées directement dans les paramètres d'environnement de la plateforme d'hébergement.
+
 ## A1 - Importation initiale des données
 
 Cette étape peuple la base de données SQLite (`db/database.db`) à partir du fichier source distant.
@@ -109,17 +135,13 @@ Cette fonctionnalité permet de visualiser les détails spécifiques des infract
 
 ## B1 - Notification par email des nouvelles contraventions
 
-Cette fonctionnalité détecte les contraventions ajoutées depuis la dernière mise à jour et envoie un email récapitulatif au destinataire configuré.
+Cette fonctionnalité détecte les contraventions ajoutées et envoie un email via SMTP.
 
 1.  **Configuration Préalable :**
-    *   Éditez le fichier `config.yaml` à la racine du projet.
-    *   Mettre `email_recipient` à l'adresse email qui recevra les notifications.
-    *   Configurez la section `smtp_settings` avec les détails de votre serveur SMTP (ex: Gmail).
-        *   `host`: ex: `"smtp.gmail.com"`
-        *   `port`: ex: `587`
-        *   `use_tls`: `true` (pour le port 587)
-        *   `username`: Votre adresse email d'envoi complète.
-        *   `password`: **Important :** Pour Gmail avec l'authentification à deux facteurs, il faut générer et utiliser un **"Mot de passe d'application"**. Ne pas utiliser votre mot de passe Google ici.
+
+- Assurez-vous que les variables d'environnement `EMAIL_RECIPIENT`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USE_TLS`, `SMTP_USERNAME`, et `SMTP_PASSWORD` sont correctement définies (voir section "Configuration Générale").
+
+- **Rappel :** Pour Gmail avec 2FA, utilisez un **Mot de passe d'application** pour `SMTP_PASSWORD`.
     
 2.  **Test du Fonctionnement :**
     *   **Initialisation :** Exécutez le script de mise à jour une première fois :
@@ -142,33 +164,19 @@ Cette fonctionnalité détecte les contraventions ajoutées depuis la dernière 
     
 ---
 
-Okay, voici la section pour B2 à ajouter dans `correction.md`, en gardant le style des sections précédentes :
-
----
-
 ## B2 - Publication Twitter des nouveaux établissements
 
-Cette fonctionnalité publie automatiquement sur Twitter les noms des établissements ayant reçu de nouvelles contraventions détectées lors de la mise à jour via la fonctionnalité B1).
+Cette fonctionnalité publie sur Twitter les noms des établissements avec de nouvelles contraventions.
 
 1.  **Configuration Préalable :**
     *   **Compte Développeur Twitter :** Un compte développeur Twitter est nécessaire ([developer.twitter.com](https://developer.twitter.com/)).
     *   **Application Twitter :** Créez une "App" dans le portail développeur associée au compte Twitter sur lequel vous souhaitez publier.
         *   Assurez-vous que l'App a les permissions **"Read and Write"** (Lecture et Écriture).
         *   Notez les 4 clés/jetons générés : **API Key, API Key Secret, Access Token, Access Token Secret**.
-    *   **Fichier `config.yaml` :**
-        *   Éditez le fichier `config.yaml`.
-        *   Ajoutez/Complétez la section `twitter_api_credentials` avec les 4 clés/jetons obtenus :
-            ```yaml
-            twitter_api_credentials:
-              api_key: "VOTRE_API_KEY_ICI"
-              api_secret: "VOTRE_API_SECRET_ICI"
-              access_token: "VOTRE_ACCESS_TOKEN_ICI"
-              access_token_secret: "VOTRE_ACCESS_TOKEN_SECRET_ICI"
-            ```
-        *   **Sécurité** : Pour un projet réel, on utiliserait des variables d'environnement par exemple.
+    *  **Variables d'Environnement :** 
+        *   Assurez-vous que les variables d'environnement `TWITTER_API_KEY`, `TWITTER_API_SECRET`, `TWITTER_ACCESS_TOKEN`, et `TWITTER_ACCESS_TOKEN_SECRET` sont correctement définies (voir section "Configuration Générale").
 
 2.  **Test du fonctionnement :**
-    *   Assurez-vous que la configuration (`config.yaml`) est correcte avec les 4 clés/jetons.
     *   **Simulez de Nouvelles Contraventions :** Comme pour B1, exécutez `python data_sync` une fois, puis modifiez `db/last_known_ids.txt` en supprimant quelques lignes/IDs pour simuler des nouveautés.
     *   **Exécutez la Mise à Jour :**
         ```bash
