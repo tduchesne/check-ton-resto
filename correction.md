@@ -18,7 +18,7 @@ Assurez-vous que le répertoire db/ existe. Exécutez la commande suivante à la
 
 Exécutez le script Python suivant pour télécharger le fichier CSV des violations et l'insérer dans la base de données SQLite créée à l'étape précédente :
 
-    python import_violations.py
+    python data_sync
 
 *(Note : Ce script efface les données existantes avant l'importation pour garantir un état frais).*    
 
@@ -44,7 +44,7 @@ Accédez à l'application via un navigateur http://127.0.0.1:5000/  et utilisez 
 
 Cette fonctionnalité met automatiquement à jour la base de données chaque jour à minuit.
 
-- **Fonctionnement :** Le scheduler est initialisé au démarrage de l'application Flask (`app.py`). La tâche `update_db` (qui exécute la même logique que `import_violations.py`) est programmée pour s'exécuter quotidiennement. Des messages sont affichés dans la console Flask lors de l'ajout de la tâche et lors de son exécution.
+- **Fonctionnement :** Le scheduler est initialisé au démarrage de l'application Flask (`app.py`). La tâche `update_db` (qui exécute la même logique que `data_sync`) est programmée pour s'exécuter quotidiennement. Des messages sont affichés dans la console Flask lors de l'ajout de la tâche et lors de son exécution.
 
 - **Note importante** : En mode debug (`FLASK_DEBUG=1`), le reloader de Flask recharge `app.py`, ce qui entraîne une double initialisation du scheduler et des exécutions simultanées. Mettre `FLASK_DEBUG=0` dans le makefile pour tester sans logs en doublon.
 
@@ -124,7 +124,7 @@ Cette fonctionnalité détecte les contraventions ajoutées depuis la dernière 
 2.  **Test du Fonctionnement :**
     *   **Initialisation :** Exécutez le script de mise à jour une première fois :
         ```bash
-        python import_violations.py
+        python data_sync
         ```
         *   Cela crée/met à jour la base de données et crée le fichier `db/last_known_ids.txt` contenant les IDs des contraventions actuelles. Aucun email n'est envoyé lors de cette première exécution car il n'y a pas d'état "précédent" à comparer.
     *   **Simulation de changements :**
@@ -133,7 +133,7 @@ Cette fonctionnalité détecte les contraventions ajoutées depuis la dernière 
     *   **Exécution  :**
         *   Ré-exécutez le script de mise à jour :
             ```bash
-            python import_violations.py
+            python data_sync
             ```
         *   **Vérification :**
             *   **Console :** Vérifiez les logs à la console pour s'assurer du bon déroulement du processus.
@@ -169,10 +169,10 @@ Cette fonctionnalité publie automatiquement sur Twitter les noms des établisse
 
 2.  **Test du fonctionnement :**
     *   Assurez-vous que la configuration (`config.yaml`) est correcte avec les 4 clés/jetons.
-    *   **Simulez de Nouvelles Contraventions :** Comme pour B1, exécutez `python import_violations.py` une fois, puis modifiez `db/last_known_ids.txt` en supprimant quelques lignes/IDs pour simuler des nouveautés.
+    *   **Simulez de Nouvelles Contraventions :** Comme pour B1, exécutez `python data_sync` une fois, puis modifiez `db/last_known_ids.txt` en supprimant quelques lignes/IDs pour simuler des nouveautés.
     *   **Exécutez la Mise à Jour :**
         ```bash
-        python import_violations.py
+        python data_sync
         ```
     *   **Vérification :**
         *   **Console :** Vérifiez les logs à la console pour s'assurer du bon déroulement du processus.
