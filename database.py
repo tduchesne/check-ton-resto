@@ -1,19 +1,40 @@
 import sqlite3
 import csv
 from io import StringIO
+import os
 
 
 class Database:
     """
     Classe pour gérer les interactions avec la base de données SQLite.
     """
-    def __init__(self, db_path='db/database.db'):
-        """
-        Initialise la classe avec le chemin de la base de données.
+    def __init__(self, db_filename='database.db'):
+        # Chemin absolu du fichier database.py 
+        script_path = os.path.abspath(__file__)
+        print(f"DEBUG: database.py path: {script_path}") 
 
-        :param db_path: Chemin vers le fichier de la base de données SQLite
-        """
-        self.db_path = db_path
+        # Répertoire contenant database.py
+        script_dir = os.path.dirname(script_path)
+        print(f"DEBUG: database.py directory: {script_dir}")
+
+        potential_project_root_1 = script_dir
+
+        # Cherche le répertoire 'db' depuis ces racines potentielles
+        if os.path.isdir(os.path.join(potential_project_root_1, 'db')):
+             project_root = potential_project_root_1
+        else:
+             print("ERREUR: Impossible de localiser le répertoire racine du projet contenant 'db'")
+             project_root = script_dir
+
+        print(f"DEBUG: Project root determined as: {project_root}")
+
+        # Chemin absolu vers le répertoire 'db'
+        db_dir = os.path.join(project_root, 'db')
+
+        # Chemin absolu vers le fichier de base de données
+        self.db_path = os.path.join(db_dir, db_filename)
+        print(f"DEBUG: Chemin DB final utilisé: {self.db_path}") 
+
         self.connection = None
 
     def get_connection(self):
