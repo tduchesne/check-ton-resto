@@ -54,8 +54,8 @@ def update_db():
     except Exception as e:
         print(f"Erreur lors de la synchronisation : {e}")
 
-
-init_scheduler()
+# La version déployée s'occupe du scheduler. 
+# init_scheduler()
 
 
 def get_db():
